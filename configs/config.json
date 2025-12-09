@@ -1,0 +1,111 @@
+{
+  "data": {
+    "fs_target": 128,
+    "radar_source_rate": 21,
+    "ecg_source_rate": 256,
+    "segment_seconds": 5,
+    "segments_per_sample": 60,
+    "sources": [
+      {
+        "name": "sub1",
+        "radar_path": "RadarData/ProcessedRadarData/20240408_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240408ecgdata.txt",
+        "start_offset_seconds": 60
+      },
+      {
+        "name": "sub2",
+        "radar_path": "RadarData/ProcessedRadarData/20240409_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240409ECGdata.txt",
+        "start_offset_seconds": 120
+      },
+      {
+        "name": "sub3",
+        "radar_path": "RadarData/ProcessedRadarData/20240410_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240410ECGdata.txt",
+        "start_offset_seconds": 180
+      },
+      {
+        "name": "sub4",
+        "radar_path": "RadarData/ProcessedRadarData/20240412_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240412ECGdata.txt",
+        "start_offset_seconds": 240
+      },
+      {
+        "name": "sub5",
+        "radar_path": "RadarData/ProcessedRadarData/20240414_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240414ECGdata.txt",
+        "start_offset_seconds": 300
+      },
+      {
+        "name": "sub6",
+        "radar_path": "RadarData/ProcessedRadarData/20240415_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240415ECGdata.txt",
+        "start_offset_seconds": 360
+      },
+      {
+        "name": "sub7",
+        "radar_path": "RadarData/ProcessedRadarData/20240507_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240507ECGdata.txt",
+        "start_offset_seconds": 420
+      },
+      {
+        "name": "sub8",
+        "radar_path": "RadarData/ProcessedRadarData/20240508_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240508ECGdata.txt",
+        "start_offset_seconds": 480
+      },
+      {
+        "name": "sub9",
+        "radar_path": "RadarData/ProcessedRadarData/20240512_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240512ECGdata.txt",
+        "start_offset_seconds": 540
+      },
+      {
+        "name": "sub10",
+        "radar_path": "RadarData/ProcessedRadarData/20240513_bin16_30/output/RX1_processed.txt",
+        "psg_path": "PSGData/20240513ECGdata.txt",
+        "start_offset_seconds": 600
+      }
+    ]
+  },
+  "stft": {
+    "window": "hamming",
+    "window_length": 16,
+    "noverlap": 4,
+    "nfft": 64
+  },
+  "filters": {
+    "order": 4,
+    "radar_bandpass": [0.4, 5.0],
+    "ecg_bandpass": [0.3, 30.0]
+  },
+  "model": {
+    "resnet_autoencoder": {
+      "encoded_space_dim": 512,
+      "dropout": 0.4,
+      "input_channels": 1,
+      "output_channels": 1,
+      "adapter_channels": 16,
+      "se_reduction": 4,
+      "pretrained_path": "models/model_2024_08_23__162411.pth"
+    }
+  },
+  "ssm": {
+    "d_model": 4,
+    "n_layer": 4,
+    "vocab_size": 4,
+    "d_state": 16,
+    "expand": 2,
+    "dt_rank": "auto",
+    "d_conv": 4,
+    "conv_bias": true,
+    "bias": false,
+    "checkpoint": "models/ssm_parameters.pth",
+    "beat_by_beat_model": "models/sub01.pt"
+  },
+  "morphological_refiner": {
+    "enabled": true,
+    "model_path": "models/morphological_refiner.pth"
+  }
+}
+
