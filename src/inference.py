@@ -1,4 +1,4 @@
-"""Main inference script for radar->PSG reconstruction."""
+"""Main inference script for radar->ECG reconstruction."""
 from __future__ import annotations
 
 import argparse
@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from beat_matched_dataset import BeatMatchedDataset
+from dataset import ECGRadarDataset
 from config_utils import load_config, load_sample, make_stft_config
 from dataset import STFTDataset
 from morphological_refiner import MorphologicalRefiner
@@ -268,7 +268,7 @@ def run_inference(sample_path: Path, cfg_path: Path, device: str, output_path: P
         # So truth also comes from STFT->istft, not directly from raw signal
         if is_beat_matched:
             psg_seg = psg[i]  # Direct access to beat segment
-            psg_stft = BeatMatchedDataset.stft(psg_seg)
+            psg_stft = ECGRadarDataset.stft(psg_seg)
         else:
             psg_seg = psg[i * seg_len : (i + 1) * seg_len]
             psg_stft = STFTDataset.stft(psg_seg, stft_cfg)
@@ -324,7 +324,7 @@ def run_inference(sample_path: Path, cfg_path: Path, device: str, output_path: P
     # Reconstruct the best segment for plotting - try both phase options
     if is_beat_matched:
         radar_seg_best = radar[best_idx]  # Direct access to beat segment
-        radar_stft_best = BeatMatchedDataset.stft(radar_seg_best)
+        radar_stft_best = ECGRadarDataset.stft(radar_seg_best)
     else:
         radar_seg_best = radar[best_idx * seg_len : (best_idx + 1) * seg_len]
         radar_stft_best = STFTDataset.stft(radar_seg_best, stft_cfg)
@@ -358,7 +358,7 @@ def run_inference(sample_path: Path, cfg_path: Path, device: str, output_path: P
     # So truth also comes from STFT->istft, not directly from raw signal
     if is_beat_matched:
         psg_seg_raw = psg[best_idx]  # Direct access to beat segment
-        psg_stft_best = BeatMatchedDataset.stft(psg_seg_raw)
+        psg_stft_best = ECGRadarDataset.stft(psg_seg_raw)
     else:
         psg_seg_raw = psg[best_idx * seg_len : (best_idx + 1) * seg_len]
         psg_stft_best = STFTDataset.stft(psg_seg_raw, stft_cfg)

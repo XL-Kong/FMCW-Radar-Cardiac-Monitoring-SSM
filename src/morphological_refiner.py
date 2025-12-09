@@ -1,7 +1,3 @@
-"""
-CNN-based morphological refiner to improve ECG reconstruction quality.
-This model refines the autoencoder output to better match morphological features.
-"""
 from __future__ import annotations
 
 import torch
