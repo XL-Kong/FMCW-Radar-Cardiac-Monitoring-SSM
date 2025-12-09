@@ -12,8 +12,7 @@ X. Kong et al., IEEE Transactions on Instrumentation and Measurement (TIM), 2025
 - `src/signal_utils.py` – Signal processing utilities (normalization, STFT inverse, edge tapering, etc.).
 - `src/ssm_models.py` – SSM model definitions (StrictSSM, CNN1D).
 - `src/ssm_processing.py` – SSM processing utilities for beat-by-beat signal processing.
-- `src/dataset.py` – STFTDataset for continuous signal processing.
-- `src/dataset.py` – Contains STFTDataset for continuous signal processing and ECGRadarDataset for beat-aligned signal processing.
+- `src/dataset.py` – STFTDataset for continuous signal processing and ECGRadarDataset for beat signal processing.
 - `src/resnet_autoencoder.py` – ResNet-based autoencoder implementation.
 - `src/morphological_refiner.py` – CNN-based morphological refiner for ECG feature enhancement.
 - `src/tools.py` – Utility functions (smoothing, filtering).
