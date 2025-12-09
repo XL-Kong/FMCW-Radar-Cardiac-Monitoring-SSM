@@ -19,20 +19,31 @@ X. Kong et al., IEEE Transactions on Instrumentation and Measurement (TIM), 2025
 - `src/tools.py` – Utility functions (smoothing, filtering).
 - `models/` – Contains:
   - `model_2024_08_23__162411.pth` – Pretrained ResNet autoencoder
-  - `sub01.pt` – Beat-by-beat SSM model (CNN1D)
+  - `ssm_parameters.pth` – SSM parameters
+  - `sub01.pt` – Beat-by-beat SSM model
   - `morphological_refiner.pth` – Morphological refiner model
   - `template.npy` – ECG template for beat matching
-  - `ssm_parameters.pth` – Legacy SSM parameters (not used in current pipeline)
+
 - `data/` – Contains `sub1.npz` through `sub10.npz` (beat-matched data samples).
 - `outputs/` – Inference results (figures and npz files).
 
 ## Environment Setup
 
-- Use the conda environment `torch2`:
-  ```bash
-  source /root/miniconda3/etc/profile.d/conda.sh && conda activate torch2
-  ```
-- Core packages: `torch`, `torchvision`, `torchaudio`, `numpy`, `pandas`, `scipy`, `opencv-python`, `matplotlib`, `tqdm`.
+Install the required packages using pip:
+
+```bash
+pip install -r requirements.txt
+```
+
+**Required packages and versions:**
+- `torch==2.3.1` - PyTorch deep learning framework
+- `torchvision==0.18.1` - Computer vision utilities for PyTorch
+- `numpy==1.24.4` - Numerical computing
+- `pandas==2.2.3` - Data manipulation and analysis
+- `scipy==1.15.0` - Scientific computing (signal processing, filtering)
+- `matplotlib==3.10.0` - Plotting and visualization
+
+See `requirements.txt` for the complete list of dependencies.
 
 ## Data
 
@@ -40,8 +51,10 @@ For data protection and privacy reasons, the provided data files (`sub1.npz` thr
 
 **Data Location**: `JournalSubmission/data/sub1.npz` through `sub10.npz`
 
-Each sample contains beat-matched segments with the following structure:
-- `radar_recon`: Reconstructed radar signals (already processed through autoencoder-decoder)
+**Data Processing Reference**: The radar and PSG data processing methods are based on the [SleepLab repository](https://github.com/XL-Kong/SleepLab). This repository will continue to be updated with additional processing utilities and examples.
+
+Each sample file contains segments with the following structure:
+- `radar_recon`: Radar signals (already processed through autoencoder-decoder)
 - `psg`: PSG/ECG reference signals
 - `radar_raw`: Original radar beat segments (for reference)
 - `meta`: Metadata including sources, indices, and segment type
@@ -52,8 +65,8 @@ The inference pipeline consists of four stages:
 
 1. **STFT Transformation**: Converts time-domain signals to frequency-time representation (64×64).
 2. **ResNet Autoencoder**: Reconstructs ECG from radar STFT using pretrained weights.
-3. **Beat-by-Beat SSM**: Processes reconstructed signal beat-by-beat using CNN1D model (`sub01.pt`).
-4. **Morphological Refiner**: Refines morphological features (peaks, slopes) using CNN refiner.
+3. **Beat-by-Beat SSM**: Processes reconstructed signal beat-by-beat.
+
 
 ### Run Inference
 
@@ -68,34 +81,7 @@ python JournalSubmission/src/inference.py \
 - `sub1_infer.npz` – Contains reconstructed signals and metadata
 - `sub1_infer.png` – Comparison plot: PSG/ECG vs. Radar reconstructed signal
 
-### Inference Features
-
-- **Automatic Data Type Detection**: Handles both beat-matched and continuous data formats
-- **Dual Phase Reconstruction**: Tries both input phase and reconstructed phase, selects the better one
-- **Beat-by-Beat SSM**: Automatically applied if `sub01.pt` is available
-- **Morphological Refinement**: Automatically applied if `morphological_refiner.pth` is available
 
 ## Configuration
 
-Key parameters in `configs/config.json`:
-
-- **Data**:
-  - `fs_target`: 128 Hz (target sampling rate)
-  - `segment_seconds`: 5 (for continuous data; beat-matched uses variable beat lengths)
-  - `segments_per_sample`: 60 (for continuous data; beat-matched uses ~36 beats)
-
-- **STFT**:
-  - `window`: "hamming"
-  - `window_length`: 16
-  - `noverlap`: 4
-  - `nfft`: 64
-
-- **Filters**:
-  - `radar_bandpass`: [0.4, 5.0] Hz
-  - `ecg_bandpass`: [0.3, 30.0] Hz
-  - `order`: 4
-
-- **Models**:
-  - `resnet_autoencoder.pretrained_path`: "models/model_2024_08_23__162411.pth"
-  - `ssm.beat_by_beat_model`: "models/sub01.pt"
-  - `morphological_refiner.model_path`: "models/morphological_refiner.pth"
+All configuration parameters are defined in `configs/config.json`. Each parameter includes inline comments explaining its purpose and usage. Please refer to the configuration file for detailed parameter descriptions.

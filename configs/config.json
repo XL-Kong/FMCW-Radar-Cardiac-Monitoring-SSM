@@ -1,12 +1,20 @@
 {
+  "_comment": "Configuration file for FMCW Radar Cardiac Monitoring SSM framework",
   "data": {
+    "_comment": "Data processing parameters",
     "fs_target": 128,
+    "_comment_fs_target": "Target sampling rate (Hz) for resampling radar and ECG signals",
     "radar_source_rate": 21,
+    "_comment_radar_source_rate": "Original radar signal sampling rate (Hz)",
     "ecg_source_rate": 256,
+    "_comment_ecg_source_rate": "Original ECG/PSG signal sampling rate (Hz)",
     "segment_seconds": 5,
+    "_comment_segment_seconds": "Segment length in seconds (for continuous data; beat-matched uses variable beat lengths)",
     "segments_per_sample": 60,
+    "_comment_segments_per_sample": "Number of segments per sample (for continuous data; beat-matched uses ~36 beats)",
     "sources": [
       {
+        "_comment": "Data source configuration for each subject",
         "name": "sub1",
         "radar_path": "RadarData/ProcessedRadarData/20240408_bin16_30/output/RX1_processed.txt",
         "psg_path": "PSGData/20240408ecgdata.txt",
@@ -69,43 +77,75 @@
     ]
   },
   "stft": {
+    "_comment": "Short-Time Fourier Transform (STFT) parameters",
     "window": "hamming",
+    "_comment_window": "Window type for STFT (hamming, hanning, etc.)",
     "window_length": 16,
+    "_comment_window_length": "Window length in samples",
     "noverlap": 4,
-    "nfft": 64
+    "_comment_noverlap": "Number of overlapping samples between windows",
+    "nfft": 64,
+    "_comment_nfft": "Number of FFT points (output frequency bins)"
   },
   "filters": {
+    "_comment": "Bandpass filter parameters for signal preprocessing",
     "order": 4,
+    "_comment_order": "Butterworth filter order",
     "radar_bandpass": [0.4, 5.0],
-    "ecg_bandpass": [0.3, 30.0]
+    "_comment_radar_bandpass": "Radar signal bandpass filter frequency range [lowcut, highcut] in Hz",
+    "ecg_bandpass": [0.3, 30.0],
+    "_comment_ecg_bandpass": "ECG/PSG signal bandpass filter frequency range [lowcut, highcut] in Hz"
   },
   "model": {
+    "_comment": "Model architecture and hyperparameters",
     "resnet_autoencoder": {
+      "_comment": "ResNet-based autoencoder configuration",
       "encoded_space_dim": 512,
+      "_comment_encoded_space_dim": "Dimension of the encoded latent space",
       "dropout": 0.4,
+      "_comment_dropout": "Dropout rate for regularization",
       "input_channels": 1,
+      "_comment_input_channels": "Number of input channels (grayscale STFT)",
       "output_channels": 1,
+      "_comment_output_channels": "Number of output channels",
       "adapter_channels": 16,
+      "_comment_adapter_channels": "Number of channels in adapter layers",
       "se_reduction": 4,
-      "pretrained_path": "models/model_2024_08_23__162411.pth"
+      "_comment_se_reduction": "Squeeze-and-Excitation reduction ratio",
+      "pretrained_path": "models/model_2024_08_23__162411.pth",
+      "_comment_pretrained_path": "Path to pretrained autoencoder model weights"
     }
   },
   "ssm": {
+    "_comment": "State Space Model (SSM) configuration",
     "d_model": 4,
+    "_comment_d_model": "Model dimension",
     "n_layer": 4,
+    "_comment_n_layer": "Number of SSM layers",
     "vocab_size": 4,
+    "_comment_vocab_size": "Vocabulary size (not used in current implementation)",
     "d_state": 16,
+    "_comment_d_state": "State dimension",
     "expand": 2,
+    "_comment_expand": "Expansion factor",
     "dt_rank": "auto",
+    "_comment_dt_rank": "Time step rank (auto or integer)",
     "d_conv": 4,
+    "_comment_d_conv": "Convolution kernel size",
     "conv_bias": true,
+    "_comment_conv_bias": "Whether to use bias in convolution layers",
     "bias": false,
+    "_comment_bias": "Whether to use bias in linear layers",
     "checkpoint": "models/ssm_parameters.pth",
-    "beat_by_beat_model": "models/sub01.pt"
+    "_comment_checkpoint": "Legacy SSM checkpoint path (not used in current pipeline)",
+    "beat_by_beat_model": "models/sub01.pt",
+    "_comment_beat_by_beat_model": "Path to beat-by-beat SSM model (CNN1D) for processing individual heartbeats"
   },
   "morphological_refiner": {
+    "_comment": "Morphological refiner configuration for ECG feature enhancement",
     "enabled": true,
-    "model_path": "models/morphological_refiner.pth"
+    "_comment_enabled": "Whether to enable morphological refiner",
+    "model_path": "models/morphological_refiner.pth",
+    "_comment_model_path": "Path to pretrained morphological refiner model weights"
   }
 }
-
